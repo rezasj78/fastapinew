@@ -66,9 +66,9 @@ def get_repairmen(db: Session):
 
 
 def get_repairman_for_manager(db: Session, job: str, city: str):
-	if db.query(models.Repairman).filter(models.Repairman.job == job and models.Repairman.city == city).first() is None:
+	if db.query(models.Repairman).filter(models.Repairman.job == job).filter(models.Repairman.city == city).first() is None:
 		return None
-	return db.query(models.Repairman).filter(models.Repairman.job == job and models.Repairman.city == city).all()
+	return db.query(models.Repairman).filter(models.Repairman.job == job).filter(models.Repairman.city == city).all()
 
 
 def create_repairman(db: Session, repairman: schemas.RepairmanCreate):
@@ -247,10 +247,12 @@ def remove_request_for_repair(db: Session, request_id: int):
 
 def get_request_repair_elv_for_repairman(db: Session, repairman_id: int):
 	if db.query(models.RequestForRepairElv).filter(
-			models.RequestForRepairElv.repairman_id == repairman_id and models.RequestForRepairElv.checked_by_manager == 1).first() is None:
+		models.RequestForRepairElv.repairman_id == repairman_id).filter(
+		models.RequestForRepairElv.checked_by_manager == 1).first() is None:
 		return None
 	requests = db.query(models.RequestForRepairElv).filter(
-		models.RequestForRepairElv.repairman_id == repairman_id and models.RequestForRepairElv.checked_by_manager == 1).all()
+		models.RequestForRepairElv.repairman_id == repairman_id).filter(
+		models.RequestForRepairElv.checked_by_manager == 1).all()
 	return requests
 
 
